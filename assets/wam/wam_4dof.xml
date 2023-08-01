@@ -1,0 +1,99 @@
+<!-- ======================================================
+	This file is part of MuJoCo.     
+	Copyright 2009-2016 Roboti LLC.
+	
+	Model 		:: WAM Arm from Barrett technologies
+		Source		: https://github.com/jhu-lcsr/barrett_model
+		Downloaded	: 10Oct'15
+		
+	Mujoco		:: Advanced physics simulation engine
+		Source		: www.roboti.us
+		Version		: 1.31
+		Released 	: 23Apr'16
+		
+	Author		:: Vikash Kumar
+		Contacts 	: kumar@roboti.us
+		Last edits 	: 30Apr16, 6Dec'15
+====================================================== -->
+
+<mujoco model="wam(v1.31)">
+    <compiler coordinate="local" angle="radian" meshdir="../stls/wam" />	
+    <option>
+    </option>
+    
+	<default>
+		<joint type="hinge" limited="true" pos="0 0 0" axis="0 0 1" frictionloss="1"/>
+		<default class="viz">
+			<geom type="mesh" contype="0" conaffinity="0" group="1" rgba="0.7 0.7 0.7 1"/>
+		</default>
+		<default class="col">
+			<geom type="mesh" contype="0" conaffinity="1" group="0" rgba="0.5 0.6 0.7 1"/>
+		</default>
+
+		<geom friction="0" condim="1"/>
+	</default>
+	<asset>
+		<mesh file="base_link_fine.stl"/>
+		<mesh file="base_link_convex.stl"/>
+		<mesh file="shoulder_link_fine.stl"/>
+		<mesh file="shoulder_link_convex_decomposition_p1.stl"/>
+		<mesh file="shoulder_link_convex_decomposition_p2.stl"/>
+		<mesh file="shoulder_link_convex_decomposition_p3.stl"/>
+		<mesh file="shoulder_pitch_link_fine.stl"/>
+		<mesh file="shoulder_pitch_link_convex.stl"/>
+		<mesh file="upper_arm_link_fine.stl"/>
+		<mesh file="upper_arm_link_convex_decomposition_p1.stl"/>
+		<mesh file="upper_arm_link_convex_decomposition_p2.stl"/>
+		<mesh file="elbow_link_fine.stl"/>
+		<mesh file="elbow_link_convex.stl"/>
+		
+	</asset>
+	
+    <worldbody>
+		<light directional="true" cutoff="60" exponent="1" diffuse="1 1 1" specular=".1 .1 .1" pos=".1 .2 1.3" dir="-.1 -.2 -1.3"/>
+	    <body name="wam/base_link" pos="0 0 0" gravcomp="0">
+			<inertial pos="0 0 0" mass="9.97059584" diaginertia="0.1 0.1 0.1" />
+            <geom class="viz" mesh="base_link_fine"/>
+            <geom class="col" mesh="base_link_convex"/>
+            <body name="wam/shoulder_yaw_link" pos="0 0 0.346" gravcomp="0">
+				<inertial pos="0.0003506 0.0006286000000000082 -0.1326795" mass="8.3936" fullinertia="0.0951574294 0.059290599699999995 0.0920323524 9.501830000000001e-05 0.00024614039999999997 0.000962672500000002"/>
+                <joint name="wam/base_yaw_joint" range="-2.6 2.6" damping="1.8"/>
+                <geom class="viz" mesh="shoulder_link_fine"/>
+                <geom class="col" mesh="shoulder_link_convex_decomposition_p1"/>
+                <geom class="col" mesh="shoulder_link_convex_decomposition_p2"/>
+                <geom class="col" mesh="shoulder_link_convex_decomposition_p3"/>
+                <body name="wam/shoulder_pitch_link" pos="0 0 0" quat="0.707107 -0.707107 0 0" gravcomp="0">
+                    <inertial pos="-0.000223 -0.013375400000000003 -0.0213924" mass="4.8487" fullinertia="0.0293268098 0.022807327099999997 0.0207815826 -0.00012929419999999997 4.339939999999999e-05 -0.0013486923999999998" />
+                    <joint name="wam/shoulder_pitch_joint" range="-1.985 1.985" damping="0.5"/>
+                    <geom class="viz" mesh="shoulder_pitch_link_fine"/>
+                    <geom class="col" mesh="shoulder_pitch_link_convex"/>
+                    <body name="wam/upper_arm_link" pos="0 0 0" quat="0.707107 0.707107 0 0" gravcomp="0">
+                        <inertial pos="0.0062435 2.5199999999979664e-05 0.3320922"  mass="1.7251" fullinertia="0.05666229699999999 0.0568066024 0.0031580509000000002 -8.212500000000142e-06 -0.0023216891999999997 1.6630699999996713e-05" />
+                        <joint name="wam/shoulder_yaw_joint" range="-2.8 2.8" damping="1.5"/>
+                        <geom class="viz" mesh="upper_arm_link_fine"/>
+                        <geom class="col" mesh="upper_arm_link_convex_decomposition_p1"/>
+                        <geom class="col" mesh="upper_arm_link_convex_decomposition_p2"/>
+                        <body name="wam/forearm_link" pos="0.045 0 0.55" quat="0.707107 -0.707107 0 0" gravcomp="0">
+                            <inertial pos="-0.0332466 -0.1359144 -0.00010919999999999169" mass="1.0912" fullinertia="0.0188907885 0.0020268453 0.0193405969 -0.0017212915 8.091999999998947e-07 -1.782410000000106e-05" />
+                            <joint name="wam/elbow_pitch_joint" range="-0.9 3.14159" damping="0.8"/>
+                            <geom class="viz" mesh="elbow_link_fine"/>
+                            <geom class="col" mesh="elbow_link_convex"/>
+							<geom class="viz" type="cylinder" size=".0445 0.136" pos="-.045 -0.214 0" euler="1.57 0 0" rgba=".25 .25 .25 1"/>
+                            <geom class="col" type="cylinder" size=".0445 0.136" pos="-.045 -0.214 0" euler="1.57 0 0"/>
+                            <body pos="-.045 -0.35 0" quat="0.707107 0.707107 0 0">
+                                <geom type="sphere" pos="0 0 0" size="0.0335" mass="0.050"/>
+                                <site name="end_effector_site" pos="0 0 0.0335"/>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+    <actuator>
+        <motor gear="1" ctrllimited="true" ctrlrange="-30 30" joint="wam/base_yaw_joint"/>
+        <motor gear="1" ctrllimited="true" ctrlrange="-30 30" joint="wam/shoulder_pitch_joint"/>
+        <motor gear="1" ctrllimited="true" ctrlrange="-30 30" joint="wam/shoulder_yaw_joint"/>
+        <motor gear="1" ctrllimited="true" ctrlrange="-30 30" joint="wam/elbow_pitch_joint"/>
+    </actuator>
+</mujoco>
